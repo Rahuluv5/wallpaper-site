@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>WallVerse - Free HD Wallpapers</title>
+<title>Rahul XYZ Wallpapers</title>
 <meta name="description" content="Download Free HD 4K Wallpapers">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -17,36 +17,62 @@ color:white;
 /* HEADER */
 header{
 background:#000;
-padding:15px 30px;
+padding:15px 20px;
 display:flex;
-justify-content:space-between;
 align-items:center;
+}
+
+.menu-icon{
+font-size:28px;
+cursor:pointer;
+margin-right:15px;
 }
 
 header h1{
 margin:0;
 color:#ff004f;
-font-size:24px;
 }
 
-/* HERO SECTION */
+/* SIDEBAR */
+.sidebar{
+position:fixed;
+left:-250px;
+top:0;
+width:250px;
+height:100%;
+background:#1a1a1a;
+padding-top:60px;
+transition:0.4s;
+}
+
+.sidebar a{
+display:block;
+padding:15px;
+color:white;
+text-decoration:none;
+border-bottom:1px solid #333;
+}
+
+.sidebar a:hover{
+background:#ff004f;
+}
+
+.sidebar.active{
+left:0;
+}
+
+/* HERO */
 .hero{
-height:300px;
-background:url('https://picsum.photos/1600/600?blur=2') center/cover;
+height:250px;
 display:flex;
 justify-content:center;
 align-items:center;
+background:#111;
 flex-direction:column;
-text-align:center;
 }
 
 .hero h2{
-font-size:35px;
 margin:0;
-}
-
-.hero p{
-opacity:0.8;
 }
 
 /* GALLERY */
@@ -59,20 +85,17 @@ padding:30px;
 
 .wall{
 background:#1a1a1a;
-border-radius:15px;
+border-radius:10px;
 overflow:hidden;
-transition:0.4s;
-box-shadow:0 0 10px rgba(0,0,0,0.5);
+transition:0.3s;
 }
 
 .wall:hover{
-transform:translateY(-8px);
-box-shadow:0 10px 25px rgba(255,0,79,0.5);
+transform:scale(1.05);
 }
 
 .wall img{
 width:100%;
-display:block;
 }
 
 .download{
@@ -80,16 +103,14 @@ display:block;
 text-align:center;
 background:#ff004f;
 color:white;
-padding:10px;
+padding:8px;
 text-decoration:none;
-font-weight:bold;
 }
 
 footer{
 text-align:center;
-padding:20px;
+padding:15px;
 background:#000;
-margin-top:30px;
 }
 
 </style>
@@ -97,28 +118,35 @@ margin-top:30px;
 
 <body>
 
+<div class="sidebar" id="sidebar">
+<a href="#" onclick="filterCategory('all')">All</a>
+<a href="#" onclick="filterCategory('nature')">Nature</a>
+<a href="#" onclick="filterCategory('cars')">Cars</a>
+<a href="#" onclick="filterCategory('anime')">Anime</a>
+</div>
+
 <header>
-<h1>WallVerse</h1>
+<span class="menu-icon" onclick="toggleMenu()">☰</span>
+<h1>Rahul XYZ Wallpapers</h1>
 </header>
 
 <div class="hero">
 <h2>Download Free 4K Wallpapers</h2>
-<p>Nature | Cars | Anime | AMOLED</p>
 </div>
 
 <div class="gallery">
 
-<div class="wall">
+<div class="wall nature">
 <img src="https://picsum.photos/400/600?1">
 <a class="download" href="https://picsum.photos/1920/1080?1" download>Download</a>
 </div>
 
-<div class="wall">
+<div class="wall cars">
 <img src="https://picsum.photos/400/600?2">
 <a class="download" href="https://picsum.photos/1920/1080?2" download>Download</a>
 </div>
 
-<div class="wall">
+<div class="wall anime">
 <img src="https://picsum.photos/400/600?3">
 <a class="download" href="https://picsum.photos/1920/1080?3" download>Download</a>
 </div>
@@ -126,8 +154,29 @@ margin-top:30px;
 </div>
 
 <footer>
-© 2026 WallVerse - Free Wallpaper Download
+© 2026 Rahul XYZ Wallpapers
 </footer>
+
+<script>
+
+function toggleMenu(){
+document.getElementById("sidebar").classList.toggle("active");
+}
+
+function filterCategory(category){
+let walls=document.getElementsByClassName("wall");
+for(let i=0;i<walls.length;i++){
+if(category==="all"){
+walls[i].style.display="block";
+}
+else{
+walls[i].style.display=
+walls[i].classList.contains(category)?"block":"none";
+}
+}
+}
+
+</script>
 
 </body>
 </html>
