@@ -10,10 +10,21 @@
 
 <style>
 body{margin:0;background:#0f0f0f;font-family:Arial;color:white;}
-header{background:#000;padding:15px 20px;display:flex;align-items:center;}
+header{background:#000;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;}
 .menu-icon{font-size:28px;cursor:pointer;margin-right:15px;}
 header h1{margin:0;color:#ff004f;}
-.sidebar{position:fixed;left:-250px;top:0;width:250px;height:100%;background:#1a1a1a;padding-top:60px;transition:0.4s;}
+
+/* Search Bar */
+#searchBar{
+  padding:5px 10px;
+  border-radius:5px;
+  border:none;
+  width:200px;
+}
+
+.sidebar{
+position:fixed;left:-250px;top:0;width:250px;height:100%;background:#1a1a1a;padding-top:60px;transition:0.4s;z-index:1000;
+}
 .sidebar a{display:block;padding:15px;color:white;text-decoration:none;border-bottom:1px solid #333;}
 .sidebar a:hover{background:#ff004f;}
 .sidebar.active{left:0;}
@@ -46,8 +57,11 @@ footer{text-align:center;padding:15px;background:#000;}
 </div>
 
 <header>
+<div style="display:flex;align-items:center;">
 <span class="menu-icon" onclick="toggleMenu()">☰</span>
 <h1>Rahul XYZ Wallpapers</h1>
+</div>
+<input type="text" id="searchBar" placeholder="Search wallpapers..." onkeyup="searchGallery()">
 </header>
 
 <div class="hero">
@@ -85,18 +99,15 @@ const db = firebase.firestore();
 
 // Sidebar toggle
 function toggleMenu(){
-  document.getElementById("sidebar").classList.toggle("active");
+  const sidebar = document.getElementById("sidebar");
+  sidebar.classList.toggle("active");
 }
 
 // Filter function
 function filterCategory(category){
   const walls = document.getElementsByClassName("wall");
   for(let i=0;i<walls.length;i++){
-    if(category==="all"){
-      walls[i].style.display="block";
-    } else {
-      walls[i].style.display= walls[i].classList.contains(category)?"block":"none";
-    }
+    walls[i].style.display= category==="all"?"block":walls[i].classList.contains(category)?"block":"none";
   }
 }
 
@@ -129,19 +140,35 @@ function downloadLightboxImage(){
 }
 
 // Load gallery from Firestore
+let galleryData = []; // Save all data for search
 function loadGallery(){
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = "";
   db.collection("photos").get().then(snapshot=>{
+    galleryData = []; // reset
     snapshot.forEach(doc=>{
       const data = doc.data();
+      galleryData.push(data);
       const div = document.createElement("div");
       div.className = "wall " + data.category;
-      div.innerHTML = `
-        <img src="${data.image}" onclick="openLightbox('${data.image}')">
-      `;
+      div.innerHTML = `<img src="${data.image}" onclick="openLightbox('${data.image}')">`;
       gallery.appendChild(div);
     });
+  });
+}
+
+// Search function
+function searchGallery(){
+  const query = document.getElementById("searchBar").value.toLowerCase();
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+  galleryData.forEach(data=>{
+    if(data.category.toLowerCase().includes(query)){
+      const div = document.createElement("div");
+      div.className = "wall " + data.category;
+      div.innerHTML = `<img src="${data.image}" onclick="openLightbox('${data.image}')">`;
+      gallery.appendChild(div);
+    }
   });
 }
 
