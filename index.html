@@ -2,219 +2,33 @@
 <html>
 <head>
 <title>Rahul XYZ Wallpapers</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Download Free HD 4K Wallpapers">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <style>
-body{
-margin:0;
-background:#0f0f0f;
-font-family:Arial;
-color:white;
-overflow-x:hidden;
-}
-
-/* LOADER */
-#loader{
-position:fixed;
-width:100%;
-height:100%;
-background:#000;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:2000;
-}
-.loader-circle{
-border:5px solid #333;
-border-top:5px solid #ff004f;
-border-radius:50%;
-width:60px;
-height:60px;
-animation:spin 1s linear infinite;
-}
-@keyframes spin{
-100%{transform:rotate(360deg);}
-}
-
-/* HEADER */
-header{
-background:#000;
-padding:15px 20px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-position:fixed;
-width:100%;
-z-index:1000;
-}
-
-.left{
-display:flex;
-align-items:center;
-}
-
-.menu-icon{
-font-size:26px;
-cursor:pointer;
-margin-right:15px;
-}
-
-.right-icons span{
-margin-left:15px;
-cursor:pointer;
-font-size:20px;
-}
-
-header h1{
-margin:0;
-color:#ff004f;
-font-size:20px;
-}
-
-/* SIDEBAR */
-.sidebar{
-position:fixed;
-left:-250px;
-top:0;
-width:250px;
-height:100%;
-background:#1a1a1a;
-padding-top:80px;
-transition:0.4s;
-z-index:999;
-}
-
-.sidebar a{
-display:block;
-padding:15px;
-color:white;
-text-decoration:none;
-border-bottom:1px solid #333;
-}
-
-.sidebar a:hover{
-background:#ff004f;
-}
-
-.sidebar.active{
-left:0;
-}
-
-/* HERO */
-.hero{
-height:90vh;
-background:url('https://picsum.photos/1600/900?blur=3') center/cover;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-text-align:center;
-}
-
-.hero h2{
-font-size:38px;
-}
-
-/* SEARCH BOX */
-.search-box{
-position:fixed;
-top:70px;
-right:20px;
-background:#1a1a1a;
-padding:10px;
-display:none;
-border-radius:5px;
-}
-.search-box input{
-padding:8px;
-border:none;
-outline:none;
-}
-
-/* GALLERY */
-.gallery{
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-gap:20px;
-padding:120px 30px 40px;
-}
-
-.wall{
-background:#1a1a1a;
-border-radius:10px;
-overflow:hidden;
-transition:0.3s;
-}
-
-.wall:hover{
-transform:translateY(-6px);
-box-shadow:0 10px 20px rgba(255,0,79,0.4);
-}
-
-.wall img{
-width:100%;
-}
-
-.download{
-display:block;
-text-align:center;
-background:#ff004f;
-color:white;
-padding:8px;
-text-decoration:none;
-}
-
-/* LOGIN MODAL */
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.7);
-justify-content:center;
-align-items:center;
-}
-
-.modal-content{
-background:#1a1a1a;
-padding:20px;
-border-radius:10px;
-width:300px;
-text-align:center;
-}
-
-.modal-content input{
-width:90%;
-padding:8px;
-margin:5px 0;
-border:none;
-}
-
-.modal-content button{
-padding:8px 15px;
-background:#ff004f;
-color:white;
-border:none;
-cursor:pointer;
-}
-
-footer{
-text-align:center;
-padding:15px;
-background:#000;
-}
-
+body{margin:0;background:#0f0f0f;font-family:Arial;color:white;}
+header{background:#000;padding:15px 20px;display:flex;align-items:center;}
+.menu-icon{font-size:28px;cursor:pointer;margin-right:15px;}
+header h1{margin:0;color:#ff004f;}
+.sidebar{position:fixed;left:-250px;top:0;width:250px;height:100%;background:#1a1a1a;padding-top:60px;transition:0.4s;}
+.sidebar a{display:block;padding:15px;color:white;text-decoration:none;border-bottom:1px solid #333;}
+.sidebar a:hover{background:#ff004f;}
+.sidebar.active{left:0;}
+.hero{height:250px;display:flex;justify-content:center;align-items:center;background:#111;flex-direction:column;}
+.hero h2{margin:0;}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px;padding:30px;}
+.wall{background:#1a1a1a;border-radius:10px;overflow:hidden;transition:0.3s;}
+.wall:hover{transform:scale(1.05);}
+.wall img{width:100%;}
+.download{display:block;text-align:center;background:#ff004f;color:white;padding:8px;text-decoration:none;}
+footer{text-align:center;padding:15px;background:#000;}
 </style>
 </head>
 
 <body>
-
-<div id="loader">
-<div class="loader-circle"></div>
-</div>
 
 <div class="sidebar" id="sidebar">
 <a href="#" onclick="filterCategory('all')">All</a>
@@ -224,50 +38,16 @@ background:#000;
 </div>
 
 <header>
-<div class="left">
 <span class="menu-icon" onclick="toggleMenu()">☰</span>
 <h1>Rahul XYZ Wallpapers</h1>
-</div>
-<div class="right-icons">
-<span onclick="toggleSearch()">🔍</span>
-<span onclick="openLogin()">👤</span>
-</div>
 </header>
 
-<div class="search-box" id="searchBox">
-<input type="text" placeholder="Search..." onkeyup="searchWallpapers(this.value)">
-</div>
-
 <div class="hero">
-<h2>Explore Stunning 4K Wallpapers</h2>
+<h2>Download Free 4K Wallpapers</h2>
 </div>
 
 <div class="gallery" id="gallery">
-
-<div class="wall nature">
-<img src="https://picsum.photos/400/600?1">
-<a class="download" href="https://picsum.photos/1920/1080?1" download>Download</a>
-</div>
-
-<div class="wall cars">
-<img src="https://picsum.photos/400/600?2">
-<a class="download" href="https://picsum.photos/1920/1080?2" download>Download</a>
-</div>
-
-<div class="wall anime">
-<img src="https://picsum.photos/400/600?3">
-<a class="download" href="https://picsum.photos/1920/1080?3" download>Download</a>
-</div>
-
-</div>
-
-<div class="modal" id="loginModal">
-<div class="modal-content">
-<h3>Login</h3>
-<input type="text" placeholder="Username">
-<input type="password" placeholder="Password">
-<button onclick="closeLogin()">Login</button>
-</div>
+<!-- Gallery loaded from Firestore -->
 </div>
 
 <footer>
@@ -275,49 +55,56 @@ background:#000;
 </footer>
 
 <script>
+// Firebase Config
+const firebaseConfig = {
+  apiKey: "AIzaSyAxmfvtFRv0E71EAWsqIjzzuejNEMf0_j4",
+  authDomain: "rahul-wallpapers.firebaseapp.com",
+  projectId: "rahul-wallpapers",
+  storageBucket: "rahul-wallpapers.firebasestorage.app",
+  messagingSenderId: "511804939153",
+  appId: "1:511804939153:web:6c1124241430e4526c5830"
+};
 
-window.onload=function(){
-document.getElementById("loader").style.display="none";
-}
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
+// Sidebar toggle
 function toggleMenu(){
-document.getElementById("sidebar").classList.toggle("active");
+  document.getElementById("sidebar").classList.toggle("active");
 }
 
-function toggleSearch(){
-let box=document.getElementById("searchBox");
-box.style.display=box.style.display==="block"?"none":"block";
-}
-
-function searchWallpapers(value){
-let walls=document.getElementsByClassName("wall");
-for(let i=0;i<walls.length;i++){
-walls[i].style.display=
-walls[i].className.toLowerCase().includes(value.toLowerCase())?"block":"none";
-}
-}
-
+// Filter function
 function filterCategory(category){
-let walls=document.getElementsByClassName("wall");
-for(let i=0;i<walls.length;i++){
-if(category==="all"){
-walls[i].style.display="block";
-}else{
-walls[i].style.display=
-walls[i].classList.contains(category)?"block":"none";
-}
-}
-document.getElementById("sidebar").classList.remove("active");
+  const walls = document.getElementsByClassName("wall");
+  for(let i=0;i<walls.length;i++){
+    if(category==="all"){
+      walls[i].style.display="block";
+    } else {
+      walls[i].style.display= walls[i].classList.contains(category)?"block":"none";
+    }
+  }
 }
 
-function openLogin(){
-document.getElementById("loginModal").style.display="flex";
+// Load gallery from Firestore
+function loadGallery(){
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+  db.collection("photos").get().then(snapshot=>{
+    snapshot.forEach(doc=>{
+      const data = doc.data();
+      const div = document.createElement("div");
+      div.className = "wall " + data.category;
+      div.innerHTML = `
+        <img src="${data.image}">
+        <a class="download" href="${data.image}" download>Download</a>
+      `;
+      gallery.appendChild(div);
+    });
+  });
 }
 
-function closeLogin(){
-document.getElementById("loginModal").style.display="none";
-}
-
+// Initial load
+loadGallery();
 </script>
 
 </body>
