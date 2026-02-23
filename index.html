@@ -2,11 +2,10 @@
 <html>
 <head>
 <title>Rahul XYZ Wallpapers</title>
-<meta name="description" content="Download Free HD 4K Wallpapers">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Download Free HD 4K Wallpapers">
 
 <style>
-
 body{
 margin:0;
 background:#0f0f0f;
@@ -15,27 +14,62 @@ color:white;
 overflow-x:hidden;
 }
 
+/* LOADER */
+#loader{
+position:fixed;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:2000;
+}
+.loader-circle{
+border:5px solid #333;
+border-top:5px solid #ff004f;
+border-radius:50%;
+width:60px;
+height:60px;
+animation:spin 1s linear infinite;
+}
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
 /* HEADER */
 header{
-background:rgba(0,0,0,0.9);
+background:#000;
 padding:15px 20px;
 display:flex;
+justify-content:space-between;
 align-items:center;
 position:fixed;
 width:100%;
 z-index:1000;
 }
 
+.left{
+display:flex;
+align-items:center;
+}
+
 .menu-icon{
-font-size:28px;
+font-size:26px;
 cursor:pointer;
 margin-right:15px;
+}
+
+.right-icons span{
+margin-left:15px;
+cursor:pointer;
+font-size:20px;
 }
 
 header h1{
 margin:0;
 color:#ff004f;
-font-size:22px;
+font-size:20px;
 }
 
 /* SIDEBAR */
@@ -67,52 +101,35 @@ background:#ff004f;
 left:0;
 }
 
-/* HERO SECTION */
+/* HERO */
 .hero{
 height:90vh;
-background:url('https://picsum.photos/1600/900?blur=3') center/cover no-repeat;
+background:url('https://picsum.photos/1600/900?blur=3') center/cover;
 display:flex;
 justify-content:center;
 align-items:center;
 flex-direction:column;
 text-align:center;
-position:relative;
-}
-
-.hero::after{
-content:"";
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-}
-
-.hero-content{
-position:relative;
-z-index:1;
 }
 
 .hero h2{
-font-size:40px;
-margin:0;
+font-size:38px;
 }
 
-.hero p{
-margin-top:10px;
-opacity:0.8;
-}
-
-.hero button{
-margin-top:20px;
-padding:10px 25px;
-border:none;
-background:#ff004f;
-color:white;
-font-size:16px;
-cursor:pointer;
+/* SEARCH BOX */
+.search-box{
+position:fixed;
+top:70px;
+right:20px;
+background:#1a1a1a;
+padding:10px;
+display:none;
 border-radius:5px;
+}
+.search-box input{
+padding:8px;
+border:none;
+outline:none;
 }
 
 /* GALLERY */
@@ -120,7 +137,7 @@ border-radius:5px;
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
 gap:20px;
-padding:50px 30px;
+padding:120px 30px 40px;
 }
 
 .wall{
@@ -131,7 +148,7 @@ transition:0.3s;
 }
 
 .wall:hover{
-transform:translateY(-8px);
+transform:translateY(-6px);
 box-shadow:0 10px 20px rgba(255,0,79,0.4);
 }
 
@@ -148,6 +165,42 @@ padding:8px;
 text-decoration:none;
 }
 
+/* LOGIN MODAL */
+.modal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+justify-content:center;
+align-items:center;
+}
+
+.modal-content{
+background:#1a1a1a;
+padding:20px;
+border-radius:10px;
+width:300px;
+text-align:center;
+}
+
+.modal-content input{
+width:90%;
+padding:8px;
+margin:5px 0;
+border:none;
+}
+
+.modal-content button{
+padding:8px 15px;
+background:#ff004f;
+color:white;
+border:none;
+cursor:pointer;
+}
+
 footer{
 text-align:center;
 padding:15px;
@@ -159,6 +212,10 @@ background:#000;
 
 <body>
 
+<div id="loader">
+<div class="loader-circle"></div>
+</div>
+
 <div class="sidebar" id="sidebar">
 <a href="#" onclick="filterCategory('all')">All</a>
 <a href="#" onclick="filterCategory('nature')">Nature</a>
@@ -167,16 +224,22 @@ background:#000;
 </div>
 
 <header>
+<div class="left">
 <span class="menu-icon" onclick="toggleMenu()">☰</span>
 <h1>Rahul XYZ Wallpapers</h1>
+</div>
+<div class="right-icons">
+<span onclick="toggleSearch()">🔍</span>
+<span onclick="openLogin()">👤</span>
+</div>
 </header>
 
-<div class="hero">
-<div class="hero-content">
-<h2>Discover Stunning 4K Wallpapers</h2>
-<p>Nature | Cars | Anime | AMOLED</p>
-<button onclick="scrollToGallery()">Explore Now</button>
+<div class="search-box" id="searchBox">
+<input type="text" placeholder="Search..." onkeyup="searchWallpapers(this.value)">
 </div>
+
+<div class="hero">
+<h2>Explore Stunning 4K Wallpapers</h2>
 </div>
 
 <div class="gallery" id="gallery">
@@ -198,14 +261,40 @@ background:#000;
 
 </div>
 
+<div class="modal" id="loginModal">
+<div class="modal-content">
+<h3>Login</h3>
+<input type="text" placeholder="Username">
+<input type="password" placeholder="Password">
+<button onclick="closeLogin()">Login</button>
+</div>
+</div>
+
 <footer>
 © 2026 Rahul XYZ Wallpapers
 </footer>
 
 <script>
 
+window.onload=function(){
+document.getElementById("loader").style.display="none";
+}
+
 function toggleMenu(){
 document.getElementById("sidebar").classList.toggle("active");
+}
+
+function toggleSearch(){
+let box=document.getElementById("searchBox");
+box.style.display=box.style.display==="block"?"none":"block";
+}
+
+function searchWallpapers(value){
+let walls=document.getElementsByClassName("wall");
+for(let i=0;i<walls.length;i++){
+walls[i].style.display=
+walls[i].className.toLowerCase().includes(value.toLowerCase())?"block":"none";
+}
 }
 
 function filterCategory(category){
@@ -213,8 +302,7 @@ let walls=document.getElementsByClassName("wall");
 for(let i=0;i<walls.length;i++){
 if(category==="all"){
 walls[i].style.display="block";
-}
-else{
+}else{
 walls[i].style.display=
 walls[i].classList.contains(category)?"block":"none";
 }
@@ -222,8 +310,12 @@ walls[i].classList.contains(category)?"block":"none";
 document.getElementById("sidebar").classList.remove("active");
 }
 
-function scrollToGallery(){
-document.getElementById("gallery").scrollIntoView({behavior:"smooth"});
+function openLogin(){
+document.getElementById("loginModal").style.display="flex";
+}
+
+function closeLogin(){
+document.getElementById("loginModal").style.display="none";
 }
 
 </script>
