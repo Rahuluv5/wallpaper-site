@@ -5,17 +5,14 @@
 <meta name="description" content="Download Free HD 4K Wallpapers">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <style>
 body{margin:0;background:#0f0f0f;font-family:Arial;color:white;}
-header{background:#000;padding:15px 20px;display:flex;align-items:center;justify-content:space-between;}
+header{background:#000;padding:15px 20px;display:flex;align-items:center;}
 .menu-icon{font-size:28px;cursor:pointer;margin-right:15px;}
 header h1{margin:0;color:#ff004f;}
-button{padding:8px 15px;background:#ff004f;color:white;border:none;cursor:pointer;}
 .sidebar{position:fixed;left:-250px;top:0;width:250px;height:100%;background:#1a1a1a;padding-top:60px;transition:0.4s;}
 .sidebar a{display:block;padding:15px;color:white;text-decoration:none;border-bottom:1px solid #333;}
 .sidebar a:hover{background:#ff004f;}
@@ -29,17 +26,16 @@ button{padding:8px 15px;background:#ff004f;color:white;border:none;cursor:pointe
 .download{display:block;text-align:center;background:#ff004f;color:white;padding:8px;text-decoration:none;cursor:pointer;margin-top:5px;}
 footer{text-align:center;padding:15px;background:#000;}
 
-/* Lightbox */
-#lightboxOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;z-index:9999;flex-direction:column;}
+/* Lightbox styles */
+#lightboxOverlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);display:none;justify-content:center;align-items:center;z-index:9999;flex-direction:column;
+}
 #lightboxOverlay img{max-width:90%;max-height:80%;border-radius:10px;}
 #lightboxOverlay button{margin-top:15px;padding:10px 20px;background:#ff004f;color:white;border:none;cursor:pointer;font-size:16px;}
 #lightboxOverlay span{position:absolute;top:20px;right:30px;font-size:40px;color:white;cursor:pointer;}
-
-/* Upload panel */
-#uploadPanel{padding:20px;text-align:center;}
-#uploadPanel input, #uploadPanel select{margin:10px;padding:8px;}
 </style>
 </head>
+
 <body>
 
 <div class="sidebar" id="sidebar">
@@ -52,25 +48,10 @@ footer{text-align:center;padding:15px;background:#000;}
 <header>
 <span class="menu-icon" onclick="toggleMenu()">☰</span>
 <h1>Rahul XYZ Wallpapers</h1>
-<div id="authSection">
-<button onclick="login()">Login</button>
-</div>
 </header>
 
 <div class="hero">
 <h2>Download Free 4K Wallpapers</h2>
-</div>
-
-<!-- Upload Panel -->
-<div id="uploadPanel" style="display:none;">
-<h3>Upload Your Wallpaper</h3>
-<input type="file" id="file"><br>
-<select id="category">
-<option value="nature">Nature</option>
-<option value="cars">Cars</option>
-<option value="anime">Anime</option>
-</select><br>
-<button onclick="uploadWallpaper()">Upload</button>
 </div>
 
 <div class="gallery" id="gallery">
@@ -100,71 +81,72 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.firestore();
 
 // Sidebar toggle
-function toggleMenu(){document.getElementById("sidebar").classList.toggle("active");}
+function toggleMenu(){
+  document.getElementById("sidebar").classList.toggle("active");
+}
 
 // Filter function
 function filterCategory(category){
   const walls = document.getElementsByClassName("wall");
   for(let i=0;i<walls.length;i++){
-    walls[i].style.display= category==="all"?"block":walls[i].classList.contains(category)?"block":"none";
+    if(category==="all"){
+      walls[i].style.display="block";
+    } else {
+      walls[i].style.display= walls[i].classList.contains(category)?"block":"none";
+    }
   }
 }
 
-// Lightbox
+// Global variable for lightbox
 let currentLightboxUrl = "";
-function openLightbox(url){currentLightboxUrl=url;document.getElementById("lightboxImage").src=url;document.getElementById("lightboxOverlay").style.display="flex";}
-function closeLightbox(){document.getElementById("lightboxOverlay").style.display="none";}
-function downloadLightboxImage(){fetch(currentLightboxUrl).then(r=>r.blob()).then(b=>{const l=document.createElement("a");l.href=window.URL.createObjectURL(b);l.download="wallpaper.jpg";l.click();});}
 
-// Load gallery
+// Show lightbox
+function openLightbox(url){
+  currentLightboxUrl = url;
+  document.getElementById("lightboxImage").src = url;
+  document.getElementById("lightboxOverlay").style.display = "flex";
+}
+
+// Close lightbox
+function closeLightbox(){
+  document.getElementById("lightboxOverlay").style.display = "none";
+}
+
+// Download from lightbox
+function downloadLightboxImage(){
+  fetch(currentLightboxUrl)
+    .then(resp => resp.blob())
+    .then(blob => {
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "wallpaper.jpg";
+      link.click();
+    })
+    .catch(err => alert("Download failed!"));
+}
+
+// Load gallery from Firestore
 function loadGallery(){
-  const gallery=document.getElementById("gallery");
-  gallery.innerHTML="";
-  db.collection("photos").orderBy("timestamp","desc").get().then(snap=>{
-    snap.forEach(doc=>{
-      const data=doc.data();
-      const div=document.createElement("div");
-      div.className="wall "+data.category;
-      div.innerHTML=`<img src="${data.image}" onclick="openLightbox('${data.image}')">`;
+  const gallery = document.getElementById("gallery");
+  gallery.innerHTML = "";
+  db.collection("photos").get().then(snapshot=>{
+    snapshot.forEach(doc=>{
+      const data = doc.data();
+      const div = document.createElement("div");
+      div.className = "wall " + data.category;
+      div.innerHTML = `
+        <img src="${data.image}" onclick="openLightbox('${data.image}')">
+      `;
       gallery.appendChild(div);
     });
   });
 }
+
+// Initial load
 loadGallery();
-
-// Login
-function login(){
-  const provider=new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider).then(result=>{
-    document.getElementById("authSection").innerHTML=`<span>Hi, ${result.user.displayName}</span> <button onclick="logout()">Logout</button>`;
-    document.getElementById("uploadPanel").style.display="block";
-  });
-}
-
-// Logout
-function logout(){auth.signOut().then(()=>{document.getElementById("authSection").innerHTML='<button onclick="login()">Login</button>';document.getElementById("uploadPanel").style.display="none";});}
-
-// Upload wallpaper
-function uploadWallpaper(){
-  const file=document.getElementById("file").files[0];
-  const category=document.getElementById("category").value;
-  if(!file){alert("Select a file");return;}
-  // Upload to Cloudinary
-  const url="https://api.cloudinary.com/v1_1/duxbhwjlq/upload";
-  const formData=new FormData();
-  formData.append("file",file);
-  formData.append("upload_preset","wallpaper_upload");
-  fetch(url,{method:"POST",body:formData}).then(r=>r.json()).then(data=>{
-    // Save to Firestore
-    db.collection("photos").add({image:data.secure_url,category:category,uploaderId:auth.currentUser.uid,timestamp:firebase.firestore.FieldValue.serverTimestamp()});
-    alert("Upload Success!");
-    loadGallery();
-  }).catch(e=>alert("Upload failed!"));
-}
 </script>
 
 </body>
