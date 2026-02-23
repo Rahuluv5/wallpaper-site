@@ -18,6 +18,7 @@ padding:15px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+flex-wrap:wrap;
 }
 
 header h1{
@@ -31,6 +32,25 @@ border:none;
 border-radius:5px;
 }
 
+.categories{
+text-align:center;
+padding:10px;
+}
+
+.categories button{
+background:#1a1a1a;
+color:white;
+border:none;
+padding:8px 15px;
+margin:5px;
+border-radius:5px;
+cursor:pointer;
+}
+
+.categories button:hover{
+background:#ff004f;
+}
+
 .gallery{
 display:grid;
 grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
@@ -42,11 +62,6 @@ padding:20px;
 background:#1a1a1a;
 padding:10px;
 border-radius:10px;
-transition:0.3s;
-}
-
-.wall:hover{
-transform:scale(1.05);
 }
 
 .wall img{
@@ -69,7 +84,6 @@ footer{
 text-align:center;
 padding:15px;
 background:#000;
-margin-top:20px;
 }
 
 </style>
@@ -79,24 +93,31 @@ margin-top:20px;
 
 <header>
 <h1>WallVerse</h1>
-<input class="search" type="text" placeholder="Search wallpapers...">
+<input class="search" type="text" placeholder="Search..." onkeyup="searchWallpapers()">
 </header>
 
-<div class="gallery">
-
-<div class="wall">
-<img src="https://picsum.photos/400/600">
-<a class="download" href="https://picsum.photos/1920/1080" download>Download</a>
+<div class="categories">
+<button onclick="filterCategory('all')">All</button>
+<button onclick="filterCategory('nature')">Nature</button>
+<button onclick="filterCategory('cars')">Cars</button>
+<button onclick="filterCategory('anime')">Anime</button>
 </div>
 
-<div class="wall">
-<img src="https://picsum.photos/401/600">
-<a class="download" href="https://picsum.photos/1920/1081" download>Download</a>
+<div class="gallery" id="gallery">
+
+<div class="wall nature">
+<img src="https://picsum.photos/400/600?1">
+<a class="download" href="https://picsum.photos/1920/1080?1" download>Download</a>
 </div>
 
-<div class="wall">
-<img src="https://picsum.photos/402/600">
-<a class="download" href="https://picsum.photos/1920/1082" download>Download</a>
+<div class="wall cars">
+<img src="https://picsum.photos/400/600?2">
+<a class="download" href="https://picsum.photos/1920/1080?2" download>Download</a>
+</div>
+
+<div class="wall anime">
+<img src="https://picsum.photos/400/600?3">
+<a class="download" href="https://picsum.photos/1920/1080?3" download>Download</a>
 </div>
 
 </div>
@@ -104,6 +125,33 @@ margin-top:20px;
 <footer>
 © 2026 WallVerse - Free Wallpaper Download
 </footer>
+
+<script>
+function filterCategory(category){
+let walls = document.getElementsByClassName("wall");
+for(let i=0;i<walls.length;i++){
+if(category === "all"){
+walls[i].style.display="block";
+}
+else{
+walls[i].style.display = walls[i].classList.contains(category) ? "block" : "none";
+}
+}
+}
+
+function searchWallpapers(){
+let input=document.querySelector(".search").value.toLowerCase();
+let walls=document.getElementsByClassName("wall");
+for(let i=0;i<walls.length;i++){
+if(walls[i].className.toLowerCase().includes(input)){
+walls[i].style.display="block";
+}
+else{
+walls[i].style.display="none";
+}
+}
+}
+</script>
 
 </body>
 </html>
