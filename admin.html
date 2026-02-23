@@ -2,12 +2,18 @@
 <html>
 <head>
 <title>Admin Panel</title>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
 <style>
 body{background:#111;color:white;font-family:Arial;text-align:center}
 input,button,select{padding:10px;margin:10px}
 button{background:#ff004f;color:white;border:none}
 </style>
 </head>
+
 <body>
 
 <h2>Admin Upload Panel</h2>
@@ -23,9 +29,43 @@ button{background:#ff004f;color:white;border:none}
 <button onclick="upload()">Upload</button>
 
 <script>
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAxmfvtFRv0E71EAWsqIjzzuejNEMf0_j4",
+  authDomain: "rahul-wallpapers.firebaseapp.com",
+  projectId: "rahul-wallpapers",
+  storageBucket: "rahul-wallpapers.firebasestorage.app",
+  messagingSenderId: "511804939153",
+  appId: "1:511804939153:web:6c1124241430e4526c5830"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+const storage = firebase.storage();
+const db = firebase.firestore();
+
 function upload(){
-alert("Firebase connect korle upload hobe");
+let file = document.getElementById("file").files[0];
+let category = document.getElementById("category").value;
+
+if(!file){
+alert("Please select a file");
+return;
 }
+
+let storageRef = storage.ref("images/" + file.name);
+
+storageRef.put(file).then(snapshot=>{
+snapshot.ref.getDownloadURL().then(url=>{
+db.collection("photos").add({
+image:url,
+category:category
+});
+alert("Upload Success!");
+});
+});
+}
+
 </script>
 
 </body>
