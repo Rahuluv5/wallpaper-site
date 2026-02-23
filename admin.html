@@ -4,7 +4,6 @@
 <title>Admin Panel</title>
 
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 
 <style>
@@ -30,6 +29,7 @@ button{background:#ff004f;color:white;border:none}
 
 <script>
 
+// 🔥 Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyAxmfvtFRv0E71EAWsqIjzzuejNEMf0_j4",
   authDomain: "rahul-wallpapers.firebaseapp.com",
@@ -40,9 +40,11 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
-
-const storage = firebase.storage();
 const db = firebase.firestore();
+
+// 🔥 Cloudinary Settings
+const CLOUD_NAME = "duxbhwjlq";
+const UPLOAD_PRESET = "wallpaper_upload";
 
 function upload(){
 let file = document.getElementById("file").files[0];
@@ -53,17 +55,30 @@ alert("Please select a file");
 return;
 }
 
-let storageRef = storage.ref("images/" + file.name);
+// Prepare Cloudinary upload
+let formData = new FormData();
+formData.append("file", file);
+formData.append("upload_preset", UPLOAD_PRESET);
 
-storageRef.put(file).then(snapshot=>{
-snapshot.ref.getDownloadURL().then(url=>{
-db.collection("photos").add({
-image:url,
-category:category
+fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`, {
+  method: "POST",
+  body: formData
+})
+.then(response => response.json())
+.then(data => {
+  let imageUrl = data.secure_url;
+  // Save URL + category to Firestore
+  db.collection("photos").add({
+    image: imageUrl,
+    category: category
+  });
+  alert("Upload Success!");
+})
+.catch(err => {
+  console.error(err);
+  alert("Upload Failed!");
 });
-alert("Upload Success!");
-});
-});
+
 }
 
 </script>
