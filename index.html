@@ -1,21 +1,34 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Free HD Wallpapers</title>
+<title>WallVerse - Free HD Wallpapers</title>
 <meta name="description" content="Download Free HD 4K Wallpapers">
 <style>
+
 body{
-background:#111;
-color:white;
-font-family:sans-serif;
 margin:0;
+background:#0f0f0f;
+font-family:Arial;
+color:white;
 }
 
 header{
-text-align:center;
-padding:20px;
-font-size:25px;
 background:#000;
+padding:15px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+header h1{
+margin:0;
+color:#ff004f;
+}
+
+.search{
+padding:8px;
+border:none;
+border-radius:5px;
 }
 
 .gallery{
@@ -25,7 +38,18 @@ gap:15px;
 padding:20px;
 }
 
-.gallery img{
+.wall{
+background:#1a1a1a;
+padding:10px;
+border-radius:10px;
+transition:0.3s;
+}
+
+.wall:hover{
+transform:scale(1.05);
+}
+
+.wall img{
 width:100%;
 border-radius:10px;
 }
@@ -38,27 +62,48 @@ color:white;
 padding:8px;
 border-radius:5px;
 text-decoration:none;
-margin-top:5px;
+margin-top:8px;
 }
+
+footer{
+text-align:center;
+padding:15px;
+background:#000;
+margin-top:20px;
+}
+
 </style>
 </head>
+
 <body>
 
-<header>🔥 Free HD Wallpapers 🔥</header>
+<header>
+<h1>WallVerse</h1>
+<input class="search" type="text" placeholder="Search wallpapers...">
+</header>
 
 <div class="gallery">
 
-<div>
+<div class="wall">
 <img src="https://picsum.photos/400/600">
 <a class="download" href="https://picsum.photos/1920/1080" download>Download</a>
 </div>
 
-<div>
+<div class="wall">
 <img src="https://picsum.photos/401/600">
 <a class="download" href="https://picsum.photos/1920/1081" download>Download</a>
 </div>
 
+<div class="wall">
+<img src="https://picsum.photos/402/600">
+<a class="download" href="https://picsum.photos/1920/1082" download>Download</a>
 </div>
+
+</div>
+
+<footer>
+© 2026 WallVerse - Free Wallpaper Download
+</footer>
 
 </body>
 </html>
