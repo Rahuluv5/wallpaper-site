@@ -23,7 +23,7 @@ header h1{margin:0;color:#ff004f;}
 .wall{background:#1a1a1a;border-radius:10px;overflow:hidden;transition:0.3s;}
 .wall:hover{transform:scale(1.05);}
 .wall img{width:100%;}
-.download{display:block;text-align:center;background:#ff004f;color:white;padding:8px;text-decoration:none;}
+.download{display:block;text-align:center;background:#ff004f;color:white;padding:8px;text-decoration:none;cursor:pointer;}
 footer{text-align:center;padding:15px;background:#000;}
 </style>
 </head>
@@ -85,6 +85,19 @@ function filterCategory(category){
   }
 }
 
+// Proper download function
+function downloadImage(url){
+  fetch(url)
+    .then(resp => resp.blob())
+    .then(blob => {
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "wallpaper.jpg"; // Default filename
+      link.click();
+    })
+    .catch(err => alert("Download failed!"));
+}
+
 // Load gallery from Firestore
 function loadGallery(){
   const gallery = document.getElementById("gallery");
@@ -96,7 +109,7 @@ function loadGallery(){
       div.className = "wall " + data.category;
       div.innerHTML = `
         <img src="${data.image}">
-        <a class="download" href="${data.image}" download>Download</a>
+        <button class="download" onclick="downloadImage('${data.image}')">Download</button>
       `;
       gallery.appendChild(div);
     });
